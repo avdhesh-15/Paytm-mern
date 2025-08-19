@@ -7,8 +7,19 @@ const cors = require("cors");
 const app = express();
 dotenv.config();
 
+const allowedOrigins = [
+  "http://localhost:5173", // dev
+  "https://paytm-mern-front.vercel.app" // prod frontend
+];
+
 app.use(cors({
-  origin: "https://paytm-mern-front.vercel.app",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
